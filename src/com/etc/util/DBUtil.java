@@ -12,18 +12,20 @@ import java.util.List;
 import org.apache.commons.beanutils.BeanUtils;
 
 /**
- * Êı¾İ¿â²Ù×÷µÄ¸¨ÖúÀà
+ * æ•°æ®åº“æ“ä½œçš„è¾…åŠ©ç±»
  */
 public class DBUtil {
 	private static final String DRIVER = "oracle.jdbc.OracleDriver";
 	private static final String URL = "jdbc:oracle:thin:@localhost:1521:orcl";
-	private static final String USER = "scott"; // ÓÃ»§Ãû
-	private static final String PASSWORD = "tiger";// ÃÜÂë
+	private static final String USER = "scott"; // ç”¨æˆ·å
+	private static final String PASSWORD = "tiger";// å¯†ç 
+	private static final String pwd = "tiger";// å¯†ç 
+
 
 	/**
-	 * »ñÈ¡Á¬½Ó¶ÔÏó
+	 * è·å–è¿æ¥å¯¹è±¡
 	 * 
-	 * @return Á¬½Ó¶ÔÏó
+	 * @return è¿æ¥å¯¹è±¡
 	 */
 	public static Connection getConn() {
 
@@ -31,24 +33,24 @@ public class DBUtil {
 		try {
 
 			Class.forName(DRIVER);
-			// µÃµ½Á¬½Ó¶ÔÏó
+			// å¾—åˆ°è¿æ¥å¯¹è±¡
 			conn = DriverManager.getConnection(URL, USER, PASSWORD);
 
 		} catch (Exception e) {
-			throw new RuntimeException("Êı¾İ¿âÁ¬½ÓÊ§°Ü!", e);
+			throw new RuntimeException("æ•°æ®åº“è¿æ¥å¤±è´¥!", e);
 		}
 		return conn;
 	}
 
 	/**
-	 * ÊÍ·Å×ÊÔ´
+	 * é‡Šæ”¾èµ„æº
 	 * 
 	 * @param rs
-	 *            ½á¹û¼¯
+	 *            ç»“æœé›†
 	 * @param pstmt
-	 *            ÃüÁî´¦Àí¶ÔÏó
+	 *            å‘½ä»¤å¤„ç†å¯¹è±¡
 	 * @param conn
-	 *            Á¬½Ó¶ÔÏó
+	 *            è¿æ¥å¯¹è±¡
 	 */
 	public static void close(ResultSet rs, PreparedStatement pstmt, Connection conn) {
 		try {
@@ -62,12 +64,12 @@ public class DBUtil {
 				conn.close();
 			}
 		} catch (SQLException e) {
-			throw new RuntimeException("ÊÍ·Å×ÊÔ´Ê§°Ü!", e);
+			throw new RuntimeException("é‡Šæ”¾èµ„æºå¤±è´¥!", e);
 		}
 	}
 
 	/**
-	 * ÉèÖÃ²ÎÊı
+	 * è®¾ç½®å‚æ•°
 	 * 
 	 * @param sql
 	 * @param conn
@@ -88,13 +90,13 @@ public class DBUtil {
 	}
 
 	/**
-	 * Í¨ÓÃµÄÊı¾İ¿â(Ôö,É¾,¸Ä)²Ù×÷·½·¨
+	 * é€šç”¨çš„æ•°æ®åº“(å¢,åˆ ,æ”¹)æ“ä½œæ–¹æ³•
 	 * 
 	 * @param sql
-	 *            sqlÓï¾ä
+	 *            sqlè¯­å¥
 	 * @param param
-	 *            sqlÓï¾ä²ÎÊı
-	 * @return ÊÜÓ°ÏìĞĞÊı
+	 *            sqlè¯­å¥å‚æ•°
+	 * @return å—å½±å“è¡Œæ•°
 	 */
 	public static int execute(String sql, Object... param) {
 		Connection conn = getConn();
@@ -106,7 +108,7 @@ public class DBUtil {
 	}
 
 	/**
-	 * Í¨ÓÃµÄÔöÉ¾¸Ä²Ù×÷(ÊÂÎñ·ÃÎÊ)
+	 * é€šç”¨çš„å¢åˆ æ”¹æ“ä½œ(äº‹åŠ¡è®¿é—®)
 	 * 
 	 * @param sql
 	 * @param conn
@@ -119,23 +121,23 @@ public class DBUtil {
 			pstmt = setPstmt(sql, conn, pstmt, param);
 			return pstmt.executeUpdate();
 		} catch (SQLException e) {
-			// ÕâÀï×îºÃµÃµ½Òì³£ĞÅÏ¢
+			// è¿™é‡Œæœ€å¥½å¾—åˆ°å¼‚å¸¸ä¿¡æ¯
 			e.printStackTrace();
-			throw new RuntimeException("Êı¾İ¿â²Ù×÷Ê§°Ü!", e);
+			throw new RuntimeException("æ•°æ®åº“æ“ä½œå¤±è´¥!", e);
 		} finally {
 			close(null, pstmt, null);
 		}
 	}
 
 	/**
-	 * Í¨ÓÃ²éÑ¯·½·¨
+	 * é€šç”¨æŸ¥è¯¢æ–¹æ³•
 	 * 
 	 * @param sql
-	 *            Òª²éÑ¯µÄsqlÓï¾ä
+	 *            è¦æŸ¥è¯¢çš„sqlè¯­å¥
 	 * @param cla
-	 *            Class¶ÔÏó
+	 *            Classå¯¹è±¡
 	 * @param param
-	 *            ²ÎÊı
+	 *            å‚æ•°
 	 * @return
 	 */
 	public static Object select(String sql, Class cla, Object... param) {
@@ -148,7 +150,7 @@ public class DBUtil {
 	}
 
 	/**
-	 * ´øÊÂÎñµÄ²éÑ¯·½·¨
+	 * å¸¦äº‹åŠ¡çš„æŸ¥è¯¢æ–¹æ³•
 	 * 
 	 * @param sql
 	 * @param conn
@@ -164,22 +166,22 @@ public class DBUtil {
 			pstmt = setPstmt(sql, conn, pstmt, param);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				// ?rs ½á¹û¼¯ cla Class¶ÔÏó
-				// objectÆäÊµ¾ÍÊÇÊı¾İ±í½á¹¹¶ÔÓ¦µÄÒ»ÌõÊµÌå¼ÇÂ¼,object¾ÍÊÇÄÇ¸öÊµÌåÀà¶ÔÏó
-				// Õâ¸ö·½·¨convertÊÇ½«½á¹û¼¯ºÍcla¶ÔÏó½øĞĞ×ª»»
+				// ?rs ç»“æœé›† cla Classå¯¹è±¡
+				// objectå…¶å®å°±æ˜¯æ•°æ®è¡¨ç»“æ„å¯¹åº”çš„ä¸€æ¡å®ä½“è®°å½•,objectå°±æ˜¯é‚£ä¸ªå®ä½“ç±»å¯¹è±¡
+				// è¿™ä¸ªæ–¹æ³•convertæ˜¯å°†ç»“æœé›†å’Œclaå¯¹è±¡è¿›è¡Œè½¬æ¢
 				Object object = convert(rs, cla);
 				list.add(object);
 			}
 			return list;
 		} catch (SQLException e) {
-			throw new RuntimeException("Êı¾İ¿â²éÑ¯Ê§°Ü!", e);
+			throw new RuntimeException("æ•°æ®åº“æŸ¥è¯¢å¤±è´¥!", e);
 		} finally {
 			close(rs, pstmt, null);
 		}
 	}
 
 	/**
-	 * »ñÈ¡µ¥¸ö¼ÇÂ¼Öµ,ÊÇµ¥¸ö¼ÇÂ¼×¢Òâ,ÀàËÆcount(1)
+	 * è·å–å•ä¸ªè®°å½•å€¼,æ˜¯å•ä¸ªè®°å½•æ³¨æ„,ç±»ä¼¼count(1)
 	 * 
 	 * @param sql
 	 * @param param
@@ -195,7 +197,7 @@ public class DBUtil {
 	}
 
 	/**
-	 * »ñÈ¡µ¥¸ö¼ÇÂ¼ ÊÂÎñ
+	 * è·å–å•ä¸ªè®°å½• äº‹åŠ¡
 	 * 
 	 * @param sql
 	 * @param conn
@@ -211,7 +213,7 @@ public class DBUtil {
 	}
 
 	/**
-	 * ÊÂÎñ´¦Àí²Ù×÷
+	 * äº‹åŠ¡å¤„ç†æ“ä½œ
 	 * 
 	 * @param tran
 	 * @return
@@ -227,68 +229,68 @@ public class DBUtil {
 			try {
 				conn.rollback();
 			} catch (SQLException e1) {
-				throw new RuntimeException("»Ø¹öÊ§°Ü!", e);
+				throw new RuntimeException("å›æ»šå¤±è´¥!", e);
 			}
-			throw new RuntimeException("ÊÂÎñÖ´ĞĞÊ§°Ü", e);
+			throw new RuntimeException("äº‹åŠ¡æ‰§è¡Œå¤±è´¥", e);
 		} finally {
 			close(null, null, conn);
 		}
 	}
 
 	/**
-	 * ²éÑ¯½á¹ûµÄ×ª»»(¹ØÏµÊı¾İ¿â <=>javaÖĞÀàÃæÏò¶ÔÏó)
+	 * æŸ¥è¯¢ç»“æœçš„è½¬æ¢(å…³ç³»æ•°æ®åº“ <=>javaä¸­ç±»é¢å‘å¯¹è±¡)
 	 * 
 	 * @param rs
-	 *            ½á¹û¼¯ºÏ
+	 *            ç»“æœé›†åˆ
 	 * @param cla
-	 *            ClassÀà¶ÔÏó
+	 *            Classç±»å¯¹è±¡
 	 * @return
 	 */
 	public static Object convert(ResultSet rs, Class cla) {
 		try {
-			// getName ÀàÃû °üº¬ÁËÍêÕû°ü½á¹¹ÀàÃû
+			// getName ç±»å åŒ…å«äº†å®Œæ•´åŒ…ç»“æ„ç±»å
 			if (cla.getName().equals("java.lang.Object")) {
 				return rs.getObject(1);
 			}
-			// ´´½¨ÊµÌåÀàµÄÊµÀı ClassÀà¶ÔÏóµÄ·½·¨£¬´´½¨Ö¸¶¨¶ÔÏóµÄÊµÀı
+			// åˆ›å»ºå®ä½“ç±»çš„å®ä¾‹ Classç±»å¯¹è±¡çš„æ–¹æ³•ï¼Œåˆ›å»ºæŒ‡å®šå¯¹è±¡çš„å®ä¾‹
 			// new Goods(); new News(); new person(); new Users();
-			// newInstance »áµ÷ÓÃÊµÌåÀàµÄ ÎŞ²ÎÊıµÄ¹¹Ôì
+			// newInstance ä¼šè°ƒç”¨å®ä½“ç±»çš„ æ— å‚æ•°çš„æ„é€ 
 			Object object = cla.newInstance();
-			//// ½á¹û¼¯Í·ĞÅÏ¢¶ÔÏó
-			// rs.getMetaData() »ñÈ¡´Ë ResultSet ¶ÔÏóµÄÁĞµÄ±àºÅ¡¢ÀàĞÍºÍÊôĞÔ¡£
+			//// ç»“æœé›†å¤´ä¿¡æ¯å¯¹è±¡
+			// rs.getMetaData() è·å–æ­¤ ResultSet å¯¹è±¡çš„åˆ—çš„ç¼–å·ã€ç±»å‹å’Œå±æ€§ã€‚
 			///
 			ResultSetMetaData metaData = rs.getMetaData();
-			// Ñ­»·ÎªÊµÌåÀàµÄÊµÀıµÄÊôĞÔ¸³Öµ getColumnCountµÃµ½ÁĞµÄ¸öÊı
+			// å¾ªç¯ä¸ºå®ä½“ç±»çš„å®ä¾‹çš„å±æ€§èµ‹å€¼ getColumnCountå¾—åˆ°åˆ—çš„ä¸ªæ•°
 			for (int i = 1; i <= metaData.getColumnCount(); i++) {
-				// »ñÈ¡ÁĞÃû name
+				// è·å–åˆ—å name
 				String name = metaData.getColumnLabel(i);
-				//// ËùÓĞÒª×¢Òâ£ºÁĞÃû[²éÑ¯Óï¾äÖĞÁĞÃû]ÓëÊôĞÔÃû±ØĞëÒ»ÖÂ¡£×îºÃ×ñÑ­ÂæÍÕÃüÃû·½·¨. rs.getObject(i) ½á¹û¼¯ÖĞµÄ²éÑ¯½á¹ûºÍ¶ÔÏóÆ¥Åä
+				//// æ‰€æœ‰è¦æ³¨æ„ï¼šåˆ—å[æŸ¥è¯¢è¯­å¥ä¸­åˆ—å]ä¸å±æ€§åå¿…é¡»ä¸€è‡´ã€‚æœ€å¥½éµå¾ªéª†é©¼å‘½åæ–¹æ³•. rs.getObject(i) ç»“æœé›†ä¸­çš„æŸ¥è¯¢ç»“æœå’Œå¯¹è±¡åŒ¹é…
 				// select empNo as eNo,empName as eName from employee
 				BeanUtils.setProperty(object, name, rs.getObject(i));
 			}
 			return object;
 		} catch (Exception e) {
-			throw new RuntimeException("ÊôĞÔÉèÖÃÊ§°Ü!", e);
+			throw new RuntimeException("å±æ€§è®¾ç½®å¤±è´¥!", e);
 		}
 	}
 
 	/**
-	 * ·ÖÒ³²Ù×÷ mysql;
+	 * åˆ†é¡µæ“ä½œ mysql;
 	 * 
 	 * @param sql
-	 *            ²éÑ¯µÄÓï¾ä
+	 *            æŸ¥è¯¢çš„è¯­å¥
 	 * @param page
-	 *            Ò³Âë(µÚ¼¸Ò³)
+	 *            é¡µç (ç¬¬å‡ é¡µ)
 	 * @param pageSize
-	 *            Ã¿Ò³µÄ¼ÇÂ¼Êı()
+	 *            æ¯é¡µçš„è®°å½•æ•°()
 	 * @param cla
-	 *            ²éÑ¯µÄÊÇÄÄ¸ö±í->ÊµÌåÀà(Users.class Aritcle.class)
+	 *            æŸ¥è¯¢çš„æ˜¯å“ªä¸ªè¡¨->å®ä½“ç±»(Users.class Aritcle.class)
 	 * @param param
-	 *            ²éÑ¯µÄÌõ¼ş¶ÔÓ¦µÄ²ÎÊıµÈ
-	 * @return PageData(Ò³ÃæÊı¾İ)
+	 *            æŸ¥è¯¢çš„æ¡ä»¶å¯¹åº”çš„å‚æ•°ç­‰
+	 * @return PageData(é¡µé¢æ•°æ®)
 	 */
 	public static PageData getPage(String sql, Integer page, Integer pageSize, Class cla, Object... param) {
-		// µÃµ½¼ÇÂ¼Êı t¾ÍÊÇÒ»¸ö±ğÃû (" + sql + ") ²éÑ¯½á¹û ,½«Õâ¸ö½á¹ûÆğ¸öÃû×Ö t
+		// å¾—åˆ°è®°å½•æ•° tå°±æ˜¯ä¸€ä¸ªåˆ«å (" + sql + ") æŸ¥è¯¢ç»“æœ ,å°†è¿™ä¸ªç»“æœèµ·ä¸ªåå­— t
 		String selSql = "select count(1) from (" + sql + ") t";
 		if (page == null) {
 			page = 1;
@@ -296,21 +298,21 @@ public class DBUtil {
 		if (pageSize == null) {
 			pageSize = 10;
 		}
-		// µÃµ½ÁË×Ü¼ÇÂ¼ÊıÓĞ¼¸Ìõ count
+		// å¾—åˆ°äº†æ€»è®°å½•æ•°æœ‰å‡ æ¡ count
 		Integer count = Integer.parseInt(getFirst(selSql, param).toString());
 		// page =>1 0*10 =>start =>0 page =>2 1*10 =>start =>10
-		// ÆğÊ¼Î»ÖÃµÄÖµ
+		// èµ·å§‹ä½ç½®çš„å€¼
 		int start = (page - 1) * pageSize;
-		// SELECT * from users limit 3,3 -- ÏÔÊ¾µÄ¼ÇÂ¼ÊÇ´ÓuserId 4¿ªÊ¼
+		// SELECT * from users limit 3,3 -- æ˜¾ç¤ºçš„è®°å½•æ˜¯ä»userId 4å¼€å§‹
 		selSql = sql + " limit " + start + "," + pageSize;
 		List list = (List) select(selSql, cla, param);
-		// ´´½¨ÁËÒ»¸ö PageData
+		// åˆ›å»ºäº†ä¸€ä¸ª PageData
 		PageData data = new PageData(list, count, pageSize, page);
 		return data;
 	}
 
 	/**
-	 * ·ÖÒ³²Ù×÷ sqlserver
+	 * åˆ†é¡µæ“ä½œ sqlserver
 	 * 
 	 * @param page
 	 * @param pageSize
@@ -319,8 +321,8 @@ public class DBUtil {
 	 * @return
 	 */
 	public static PageData getPage(Integer page, Integer pageSize, Class cla, String identity) {
-		String name = cla.getName().substring(cla.getName().lastIndexOf(".") + 1);// ¸ù¾İÃüÃû¹æÔò´ÓÀàÃû»ñÈ¡Êı¾İ¿â±íÃû
-		String selSql = "select count(*) from " + name;// »ñÈ¡×ÜÊı
+		String name = cla.getName().substring(cla.getName().lastIndexOf(".") + 1);// æ ¹æ®å‘½åè§„åˆ™ä»ç±»åè·å–æ•°æ®åº“è¡¨å
+		String selSql = "select count(*) from " + name;// è·å–æ€»æ•°
 		if (page == null) {
 			page = 1;
 		}
@@ -330,25 +332,25 @@ public class DBUtil {
 		int start = (page - 1) * pageSize;
 		Integer count = Integer.parseInt(getFirst(selSql, null).toString());
 		selSql = "select top " + pageSize + " * from " + name + " where " + identity + " not in (select top " + start
-				+ " " + identity + " from " + name + " )"; // Æ´½Ó²éÑ¯Óï¾ä
+				+ " " + identity + " from " + name + " )"; // æ‹¼æ¥æŸ¥è¯¢è¯­å¥
 		List list = (List) select(selSql, cla, null);
 		PageData data = new PageData(list, count, pageSize, page);
 		return data;
 	}
 
 	/**
-	 * oracleµÄ·ÖÒ³ÊµÏÖ
+	 * oracleçš„åˆ†é¡µå®ç°
 	 * 
-	 * @param sql  Ö´ĞĞµÄsqlÓï¾ä  (select * from emp where ename like ?)
-	 * @param page  µ±Ç°Ò³Âë
-	 * @param pageSize  Ã¿Ò³ÏÔÊ¾µÄ¼ÇÂ¼Êı
-	 * @param cla  ClassÀà¶ÔÏó(Emp.class Dept.class)
-	 * @param param  sqlÓï¾äÖĞµÄ? ("%S%")
-	 * @return   ÊÇÒ»¸öPageData¶ÔÏó
+	 * @param sql  æ‰§è¡Œçš„sqlè¯­å¥  (select * from emp where ename like ?)
+	 * @param page  å½“å‰é¡µç 
+	 * @param pageSize  æ¯é¡µæ˜¾ç¤ºçš„è®°å½•æ•°
+	 * @param cla  Classç±»å¯¹è±¡(Emp.class Dept.class)
+	 * @param param  sqlè¯­å¥ä¸­çš„? ("%S%")
+	 * @return   æ˜¯ä¸€ä¸ªPageDataå¯¹è±¡
 	 */
 	public static PageData getOraclePage(String sql, Integer page, Integer pageSize, Class cla, Object... param) {
 		// sql select * from news
-		// select count(1) from (select * from news) t --µÃµ½¼ÇÂ¼×ÜÊı
+		// select count(1) from (select * from news) t --å¾—åˆ°è®°å½•æ€»æ•°
 		String selSql = "select count(1) from (" + sql + ") t";
 		if (page == null) {
 			page = 1;
@@ -356,23 +358,23 @@ public class DBUtil {
 		if (pageSize == null) {
 			pageSize = 10;
 		}
-		// ²éÑ¯µÃµ½×Ü¼ÇÂ¼Êı
+		// æŸ¥è¯¢å¾—åˆ°æ€»è®°å½•æ•°
 		Integer count = Integer.parseInt(getFirst(selSql, param).toString());
-		// ÊµÏÖ¼òµ¥µÄ·ÖÒ³Óï¾ä
-		// Èç¹ûÊÇoracleÊı¾İ¿âµÄ»° Ó¦¸ÃÊ¹ÓÃrownumÀ´ÊµÏÖ¼òµ¥µÄ·ÖÒ³²Ù×÷
-		int start = (page - 1) * pageSize; // ÆğÊ¼Î»ÖÃËã·¨
-		// + ÆäÊµ²»Ì«ºÃ ×îºÃÓÃstringBuffer stringBuilder append
+		// å®ç°ç®€å•çš„åˆ†é¡µè¯­å¥
+		// å¦‚æœæ˜¯oracleæ•°æ®åº“çš„è¯ åº”è¯¥ä½¿ç”¨rownumæ¥å®ç°ç®€å•çš„åˆ†é¡µæ“ä½œ
+		int start = (page - 1) * pageSize; // èµ·å§‹ä½ç½®ç®—æ³•
+		// + å…¶å®ä¸å¤ªå¥½ æœ€å¥½ç”¨stringBuffer stringBuilder append
 
-		// rownum<=10 Õâ¸ö10Ó¦¸ÃÊÇ½áÊøÎ»ÖÃ page = 2 Ã¿Ò³ÏÔÊ¾10Ìõ ->µÚ11µ½µÚ20Ìõ
+		// rownum<=10 è¿™ä¸ª10åº”è¯¥æ˜¯ç»“æŸä½ç½® page = 2 æ¯é¡µæ˜¾ç¤º10æ¡ ->ç¬¬11åˆ°ç¬¬20æ¡
 		int end = page * pageSize;
-		// r>5 Õâ¸öÊÇ¹ıÂËµôµÄ²¿·Ö
+		// r>5 è¿™ä¸ªæ˜¯è¿‡æ»¤æ‰çš„éƒ¨åˆ†
 
-		// sql ÆäÊµ¾ÍÊÇ (select * from emp) tbl
+		// sql å…¶å®å°±æ˜¯ (select * from emp) tbl
 		String oracleSql = "select * from (select tbl.*,rownum r from (" + sql + ") tbl where rownum<=" + end
 				+ ") mytable  where r>" + start;
 
 		List list = (List) select(oracleSql, cla, param);
-		// ´´½¨Ò»¸öPageData¶ÔÏó
+		// åˆ›å»ºä¸€ä¸ªPageDataå¯¹è±¡
 		PageData data = new PageData(list, count, pageSize, page);
 		return data;
 	}
