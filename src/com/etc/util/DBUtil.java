@@ -19,6 +19,8 @@ public class DBUtil {
 	private static final String URL = "jdbc:oracle:thin:@localhost:1521:orcl";
 	private static final String USER = "scott"; // 用户名
 	private static final String PASSWORD = "tiger";// 密码
+	
+	private static final String MSG = "tiger";// MSG
 
 	/**
 	 * 获取连接对象
